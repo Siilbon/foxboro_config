@@ -1,13 +1,15 @@
 #%%
 import pandas as pd
 import re
+
 #%%
 foxboro_raw = 'raw_data/testdata.out'
 
-with open(foxboro_raw) as f:
+
+with open(foxboro_raw, encoding='latin') as f:
     # patterns for Foxboro config files
     new_block_pattern = r'^NAME\s+=\s+(?P<compound>\w+):(?P<name>\w+)'
-    block_param_pattern = r'\s+(?P<param>\w+)\s+=\s+(?P<value>\w+)'
+    block_param_pattern = r'\s+(?P<param>\w+)\s+=\s+(?P<value>.*)$'
     end_block_pattern = r'^END$'
 
     # Build a dictionary containing the data for a block
@@ -34,7 +36,7 @@ with open(foxboro_raw) as f:
             if block_type not in blocks:
                 blocks[block_type] = block_df
             else:
-                blocks[block_type] = pd.concat(blocks[block_type], block_df, ignore_index=True)
+                blocks[block_type] = pd.concat([blocks[block_type], block_df], ignore_index=True)
             
             # count the new block and reset 
             block_counter += 1
@@ -42,7 +44,4 @@ with open(foxboro_raw) as f:
     
     print(f'Gathered data for {block_counter} blocks')
 
-    
-# %%
-blocks.keys()
-# %%
+#%%
