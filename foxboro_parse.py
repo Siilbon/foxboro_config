@@ -55,3 +55,13 @@ class FoxboroConfig:
             print(f'Gathered data for {block_counter} blocks')
 
         return blocks
+
+    def to_excel(self, excel_path):
+        '''Write all the DataFrames to separate sheets in an excel file'''
+
+        with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
+            for df_name in self.dfs:
+                self.dfs[df_name].to_excel(writer,
+                                           sheet_name=df_name,
+                                           index=False,
+                                           encoding='latin')
